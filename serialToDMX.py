@@ -120,12 +120,11 @@ if __name__ == "__main__":
       try:
         x=str(ser.readline()) # read data from microbit
       except Exception as e:
-      #except SerialException:
-        print("error reading from serial port")
+        print(e)
         try:
           ser.close()
-        except SerialException:
-          print("error closing serial port")
+        except serial.SerialException as e:
+          print(e)
         finally:
           ser = None 
       else:
