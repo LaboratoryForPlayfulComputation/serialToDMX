@@ -1,6 +1,7 @@
 import array
 import time
 import serial
+import logging
 from ola.ClientWrapper import ClientWrapper
 
 class Universe:
@@ -97,13 +98,19 @@ def initSerial(portName, baud):
     bytesize=serial.EIGHTBITS,
     timeout=1
     )
-  except serial.SerialException as e:
+  #except serial.SerialException as e:
+  except Exception as e:
     print(e)
+    logging.debug(e)
     return None
   else:
+    logging.info(serialPort)
     return serialPort
 
 if __name__ == "__main__":
+  logging.basicConfig(filename='serialToDMX.log',level=logging.DEBUG)
+  logging.info(time.ctime())
+
   ser = None
   ser = initSerial('/dev/ttyACM0', 115200) # port is '/dev/tty.usbmodem1422' on mac
 
@@ -121,13 +128,16 @@ if __name__ == "__main__":
         x=str(ser.readline()) # read data from microbit
       except Exception as e:
         print(e)
+        logging.debug(e)
         try:
           ser.close()
         except serial.SerialException as e:
+          logging.debug(e)
           print(e)
         finally:
           ser = None 
       else:
+        logging.info(x)
         parseCommand(x)
 
   ser.close()
